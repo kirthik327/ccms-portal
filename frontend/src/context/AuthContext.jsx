@@ -1,6 +1,13 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
+// Configure Axios Base URL based on environment
+if (import.meta.env.MODE === 'production') {
+  axios.defaults.baseURL = 'https://ccms-nit.onrender.com';
+} else {
+  axios.defaults.baseURL = '';
+}
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
