@@ -201,11 +201,14 @@ const outh = async (email, otp) => {
     }
 
     const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE || 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // Force SSL/TLS on port 465 (highly stable on cloud servers like Render)
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      connectionTimeout: 10000, // 10 seconds timeout
     });
 
     const mailOptions = {
