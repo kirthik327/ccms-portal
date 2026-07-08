@@ -209,6 +209,7 @@ const outh = async (email, otp) => {
         pass: process.env.EMAIL_PASS,
       },
       connectionTimeout: 10000, // 10 seconds timeout
+      family: 4, // Force IPv4 connection to prevent ENETUNREACH on IPv6-less cloud networks
     });
 
     const mailOptions = {
