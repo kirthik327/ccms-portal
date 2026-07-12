@@ -200,8 +200,21 @@ const outh = async (email, otp) => {
       throw new Error('SMTP credentials are not configured in your .env file yet. Please set EMAIL_USER and EMAIL_PASS to send real emails.');
     }
 
+    const dns = require('dns').promises;
+    let resolvedHost = 'smtp.gmail.com';
+    try {
+      console.log('[OUTH OTP SERVICE] Resolving smtp.gmail.com IPv4 address manually...');
+      const ipAddresses = await dns.resolve4('smtp.gmail.com');
+      if (ipAddresses && ipAddresses.length > 0) {
+        resolvedHost = ipAddresses[0];
+        console.log(`[OUTH OTP SERVICE] Manually resolved smtp.gmail.com to IPv4: ${resolvedHost}`);
+      }
+    } catch (dnsErr) {
+      console.warn('[OUTH OTP SERVICE] Manual DNS resolution failed, falling back to hostname:', dnsErr.message);
+    }
+
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: resolvedHost,
       port: 465,
       secure: true, // Force SSL/TLS on port 465 (highly stable on cloud servers like Render)
       auth: {
@@ -209,7 +222,9 @@ const outh = async (email, otp) => {
         pass: process.env.EMAIL_PASS,
       },
       connectionTimeout: 10000, // 10 seconds timeout
-      family: 4, // Force IPv4 connection to prevent ENETUNREACH on IPv6-less cloud networks
+      tls: {
+        servername: 'smtp.gmail.com' // Crucial: verifies SSL certificate against the domain even when connecting to IP
+      }
     });
 
     const mailOptions = {
