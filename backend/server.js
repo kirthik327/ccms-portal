@@ -32,6 +32,20 @@ app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/admin', adminRoutes);
 
+app.get('/api/debug-env', (req, res) => {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    return res.json({ status: 'missing' });
+  }
+  const maskedUri = uri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@');
+  res.json({
+    status: 'present',
+    uri: maskedUri,
+    nodeEnv: process.env.NODE_ENV,
+    emailUser: process.env.EMAIL_USER
+  });
+});
+
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
