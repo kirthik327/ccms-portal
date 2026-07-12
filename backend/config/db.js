@@ -55,8 +55,9 @@ const connectDB = async () => {
     
     try {
       console.log(`Connecting to MONGODB_URI: ${uri}...`);
-      // Use a low serverSelectionTimeoutMS so it fails fast if MongoDB is not running locally
-      await mongoose.connect(uri, { serverSelectionTimeoutMS: 2000 });
+      // Use 10000ms in production to allow cold starts, and 2000ms in development
+      const timeout = process.env.NODE_ENV === 'production' ? 10000 : 2000;
+      await mongoose.connect(uri, { serverSelectionTimeoutMS: timeout });
 
       console.log(`MongoDB Connected: ${mongoose.connection.host}`);
     } catch (connError) {
