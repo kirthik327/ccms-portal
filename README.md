@@ -80,4 +80,4 @@ cd ../frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](https://ccms-portal-gules.vercel.app/) in your browser to view the application.
+Open [https://ccms-portal-gules.vercel.app/](https://ccms-portal-gules.vercel.app/) in your browser to view the application.
