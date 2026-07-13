@@ -60,11 +60,11 @@ To run the production-ready build:
   ```
 * **Start the Backend**:
   ```bash
-  cd ../backend
+  cd ../backend 
   npm install
   npm start
   ```
-The website will be online at: **[http://localhost:5000/](http://localhost:5000/)**
+The website will be online at: (https://ccms-portal-gules.vercel.app)
 
 ---
 
