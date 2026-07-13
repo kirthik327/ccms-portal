@@ -147,12 +147,6 @@ const Login = () => {
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Password
               </label>
-              <Link
-                to="/forgot-password"
-                className="text-xs font-bold text-primary hover:underline dark:text-primary-light"
-              >
-                Forgot Password?
-              </Link>
             </div>
             <div className="relative mt-1.5">
               <Lock className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-slate-400" />
