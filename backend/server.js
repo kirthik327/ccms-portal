@@ -42,7 +42,9 @@ app.get('/api/debug-env', (req, res) => {
     status: 'present',
     uri: maskedUri,
     nodeEnv: process.env.NODE_ENV,
-    emailUser: process.env.EMAIL_USER
+    emailUser: process.env.EMAIL_USER,
+    emailPassLength: process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 0,
+    emailPassFirstLast: process.env.EMAIL_PASS ? process.env.EMAIL_PASS[0] + '...' + process.env.EMAIL_PASS.slice(-1) : 'none'
   });
 });
 
