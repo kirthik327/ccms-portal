@@ -1,0 +1,39 @@
+# CCMS Root GitIgnore Config
+
+# Dependency folders
+node_modules/
+**/node_modules/
+
+# Compiled frontend production build output
+frontend/dist/
+
+# Local database uploads (contains temporary complaint images)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Private credentials & environment keys
+backend/.env
+.env.local
+.env.*.local
+
+# Logs and diagnostic reports
+*.log
+logs/
+npm-debug.log*
+chrome_output.log
+
+# Temporary testing / browser session profiles
+.chrome-profile/
+chrome_profile/
+.project/
+
+# Local backup ZIPs
+ccms_source_code.zip
+
+# System & Editor specific files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvsca*

@@ -195,12 +195,12 @@ const ComplaintDetails = () => {
                 </h4>
                 <div className="mt-3 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-2 dark:border-slate-800 dark:bg-slate-950/40">
                   <a
-                    href={complaint.imageUrl.startsWith('/') ? (window.location.port === '5173' ? `http://localhost:5000${complaint.imageUrl}` : (window.location.hostname.includes('vercel.app') ? `https://ccms-nit.onrender.com${complaint.imageUrl}` : complaint.imageUrl)) : complaint.imageUrl}
+                    href={complaint.imageUrl.startsWith('/') ? (window.location.port === '5173' ? `http://localhost:5000${complaint.imageUrl}` : (window.location.hostname.includes('vercel.app') ? `https://ccms-backend-p5rm.onrender.com${complaint.imageUrl}` : complaint.imageUrl)) : complaint.imageUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src={complaint.imageUrl.startsWith('/') ? (window.location.port === '5173' ? `http://localhost:5000${complaint.imageUrl}` : (window.location.hostname.includes('vercel.app') ? `https://ccms-nit.onrender.com${complaint.imageUrl}` : complaint.imageUrl)) : complaint.imageUrl}
+                      src={complaint.imageUrl.startsWith('/') ? (window.location.port === '5173' ? `http://localhost:5000${complaint.imageUrl}` : (window.location.hostname.includes('vercel.app') ? `https://ccms-backend-p5rm.onrender.com${complaint.imageUrl}` : complaint.imageUrl)) : complaint.imageUrl}
                       alt="Complaint Attachment"
                       className="max-h-80 rounded-xl object-contain hover:scale-[1.01] transition-transform"
                     />

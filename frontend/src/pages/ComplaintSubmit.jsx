@@ -311,7 +311,7 @@ const ComplaintSubmit = () => {
               ) : (
                 <div className="relative flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
                   <img
-                    src={imagePreview.startsWith('/') ? (window.location.port === '5173' ? `http://localhost:5000${imagePreview}` : (window.location.hostname.includes('vercel.app') ? `https://ccms-nit.onrender.com${imagePreview}` : imagePreview)) : imagePreview}
+                    src={imagePreview.startsWith('/') ? (window.location.port === '5173' ? `http://localhost:5000${imagePreview}` : (window.location.hostname.includes('vercel.app') ? `https://ccms-backend-p5rm.onrender.com${imagePreview}` : imagePreview)) : imagePreview}
                     alt="Upload Preview"
                     className="max-h-64 rounded-xl object-contain shadow-sm"
                   />
@@ -356,4 +356,3 @@ const ComplaintSubmit = () => {
 };
 
 export default ComplaintSubmit;
-

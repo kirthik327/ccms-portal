@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Configure Axios Base URL based on environment
 if (import.meta.env.MODE === 'production') {
-  axios.defaults.baseURL = 'https://ccms-nit.onrender.com';
+  axios.defaults.baseURL = 'https://ccms-backend-p5rm.onrender.com';
 } else {
   axios.defaults.baseURL = '';
 }
