@@ -1,79 +1,83 @@
-# 🎓 CCMS: Campus Complaint Management System
+# 🏛️ Campus Complaint Management System (CCMS)
 
-A modern, responsive, and secure MERN-stack web application designed for colleges and universities to manage, track, and resolve student grievances efficiently.
+A secure, modern, and confidential **Campus Complaint Management System (CCMS)** designed for college students to submit grievances, upload supporting photo attachments, and track the resolution status of their complaints in real time. The system also features a robust Admin Dashboard for college authorities to review, filter, and resolve issues efficiently.
+
+---
+
+## 📸 Screenshots
+
+To help you visualize the platform's inner panels and features without needing credentials, here are screenshots of the application:
+
+### 🔑 Portal Login
+![Login Screen](./screenshots/login.png)
+
+### 🎓 Student Dashboard
+![Student Dashboard](./screenshots/student_dashboard.png)
+
+### ✍️ Grievance Submission Form (With Attachments)
+![Grievance Form](./screenshots/grievance_form.png)
+
+### 🛠️ Admin Resolution Panel
+![Admin Dashboard](./screenshots/admin_dashboard.png)
 
 ---
 
 ## 🚀 Key Features
 
-* **Dual-Method Authentication**: Students can securely log in using either their **Register Number** or registered **Email Address**.
-* **Secure OTP Password Reset**: A 3-step password recovery wizard with automatic secure Gmail OTP dispatch and a 30-second resend cooldown timer.
-* **Role-Based Dashboards**:
-  * **Students**: Submit complaints, upload proof/images, reply to updates, view case statuses, and manage profile emails.
-  * **Admin / Staff**: Assign complaints to specific staff, update statuses (Submitted, Assigned, Resolved), and view interactive inflow trends.
-* **Registered User Directory**: A secure administrative panel listing registered students' details (Names and Roll Numbers).
-* **Tactile KPI Cards**: Admin metrics that toggle list views dynamically upon click.
-* **Premium Aesthetics**: Responsive glassmorphic layout, fluid flexboxes, global text copy protection, and modern dark-mode support.
+### 👤 Student Features
+- **Secure Authentication:** Log in safely using college Roll Number credentials.
+- **Submit Complaints:** Categorize grievances (e.g., Hostel, Academic, Infrastructure, Canteen) and provide detailed descriptions.
+- **Supporting Media:** Attach photos as evidence for complaints.
+- **Track Status:** Monitor the life cycle of submitted grievances (Submitted ➔ In Progress ➔ Resolved) with real-time status badges.
+
+### 💼 Admin & Staff Features
+- **Grievance Management:** View all submitted complaints across the campus in one central inbox.
+- **Department Filters:** Quickly sort complaints by department or category.
+- **Update Status:** Change complaint states and leave official remarks explaining actions taken.
+- **Overview Metrics:** Check statistics on resolved vs. pending grievances.
 
 ---
 
 ## 🛠️ Technology Stack
 
-* **Frontend**: React.js, Tailwind CSS v4, Lucide Icons, Axios, Recharts (for trend analytics).
-* **Backend**: Node.js, Express.js, JWT Authentication, Nodemailer (SMTP email delivery).
-* **Database**: MongoDB (via Mongoose ODM) with cloud database integration on MongoDB Atlas.
-* **Process Manager**: PM2 (for 24/7 background hosting).
+- **Frontend:** React.js, Tailwind CSS (Styling), Axios (API calls), Lucide React (Icons), Vite
+- **Backend:** Node.js, Express.js, Multer (Local static file uploads)
+- **Database:** MongoDB Atlas (Mongoose ODM)
+- **Hosting:** 
+  - Frontend: Vercel
+  - Backend: Render
 
 ---
 
-## 💻 Local Setup & Installation
+## ⚙️ Local Development Setup
 
-### Prerequisites
-* [Node.js](https://nodejs.org/) installed on your computer.
-* A [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account (or local MongoDB service).
+To run the project locally on your machine, follow these steps:
 
-### 1. Clone the Codebase
-If you have Git installed, clone the repository:
+### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/kirthik327/ccms-portal.git
 cd ccms-portal
 ```
 
-### 2. Configure Environment Variables
-Create a file named `.env` inside the `backend/` directory:
+### 2️⃣ Configure Environment Variables
+Create a `.env` file inside the `backend` folder and add the following keys:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://yourUsername:yourPassword@cluster0.xxxx.mongodb.net/ccms
-JWT_SECRET=yourSuperSecretJWTKey123
-EMAIL_USER=yourGmailAddress@gmail.com
-EMAIL_PASS=your16CharGmailAppPassword
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
 ```
 
-### 3. Build & Start the Application
-To run the production-ready build:
+### 3️⃣ Start Backend Server
+```bash
+cd backend
+npm install
+npm start
+```
 
-* **Build the Frontend**:
-  ```bash
-  cd frontend
-  npm install
-  npm run build
-  ```
-* **Start the Backend**:
-  ```bash
-  cd ../backend 
-  npm install
-  npm start
-  ```
-The website will be online at: (https://ccms-portal-gules.vercel.app)
-
----
-
-## ☁️ Deploying to the Cloud for Free
-To make this website permanently public so anyone can visit it without your laptop being on, refer to our detailed step-by-step guides:
-* **Free Hosting Guide**: See [free_hosting_guide.md](./free_hosting_guide.md) to host it on **Render.com**.
-* **Official Launch Guide**: See [official_website_launch_guide.md](./official_website_launch_guide.md) for custom domains and VPS deployment.
-
----
-
-## 📄 License
-This project is open-source and available under the [MIT License](LICENSE).
+### 4️⃣ Start Frontend Server
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser to view the application.
