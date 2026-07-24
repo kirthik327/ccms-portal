@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Shield, ArrowLeft, KeyRound, Sparkles } from 'lucide-react';
-import { sendOTPApi } from '../utils/otpMock';
+import { Mail, Shield, ArrowLeft, KeyRound } from 'lucide-react';
+import { sendOTPApi } from '../services/authService';
 import nitLogo from '../assets/nit-logo.jpg';
 import loginBg from '../assets/login-bg.jpg';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -29,6 +30,7 @@ const ForgotPassword = () => {
     }
 
     setError('');
+    setInfoMessage('');
     setSubmitting(true);
 
     try {
@@ -36,13 +38,16 @@ const ForgotPassword = () => {
       setSubmitting(false);
 
       if (res.success) {
-        navigate('/verify-otp');
+        setInfoMessage(res.message);
+        setTimeout(() => {
+          navigate('/verify-otp');
+        }, 1200);
       } else {
         setError(res.message);
       }
     } catch (err) {
       setSubmitting(false);
-      setError('Failed to generate OTP. Please try again.');
+      setError('Failed to send verification code. Please try again.');
     }
   };
 
@@ -79,7 +84,7 @@ const ForgotPassword = () => {
             Forgot Your Password?
           </h2>
           <p className="text-center text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-            Enter your registered college email address to generate a 6-digit verification code to reset your password.
+            Enter your registered college email address and we'll send you a verification code to reset your password.
           </p>
         </div>
 
@@ -87,6 +92,13 @@ const ForgotPassword = () => {
         {error && (
           <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold leading-relaxed text-rose-600 dark:border-rose-900/35 dark:bg-rose-950/20 dark:text-rose-400">
             {error}
+          </div>
+        )}
+
+        {/* Info Alert */}
+        {infoMessage && (
+          <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-semibold leading-relaxed text-emerald-600 dark:border-emerald-900/35 dark:bg-emerald-950/20 dark:text-emerald-400">
+            {infoMessage}
           </div>
         )}
 
@@ -110,7 +122,7 @@ const ForgotPassword = () => {
               />
             </div>
             <span className="text-[10px] text-slate-400 mt-1.5 block">
-              Enter your registered college email address
+              We'll send a 6-digit verification code to this email
             </span>
           </div>
 
@@ -123,13 +135,10 @@ const ForgotPassword = () => {
             {submitting ? (
               <>
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                Generating OTP...
+                Sending OTP...
               </>
             ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                Generate OTP
-              </>
+              'Send OTP'
             )}
           </button>
         </form>
@@ -140,9 +149,9 @@ const ForgotPassword = () => {
             <Shield className="h-4.5 w-4.5" />
           </div>
           <div className="text-left">
-            <h4 className="text-[11px] font-bold tracking-wide uppercase text-slate-700 dark:text-slate-250">Demo Mode Preview</h4>
+            <h4 className="text-[11px] font-bold tracking-wide uppercase text-slate-700 dark:text-slate-250">Secure Verification</h4>
             <p className="mt-1 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400">
-              The 6-digit OTP will be generated locally and displayed inside the testing preview panel on the next screen.
+              The OTP is single-use, expires in 5 minutes, and will only be sent to your registered email address.
             </p>
           </div>
         </div>
