@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Shield, ArrowLeft, KeyRound } from 'lucide-react';
+import { Mail, Shield, ArrowLeft, KeyRound, Sparkles } from 'lucide-react';
 import { sendOTPApi } from '../utils/otpMock';
 import nitLogo from '../assets/nit-logo.jpg';
 import loginBg from '../assets/login-bg.jpg';
@@ -19,12 +19,12 @@ const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) {
-      setError('Please enter your registered college email address.');
+      setError('Please enter a valid registered college email address.');
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Please enter a valid email address (e.g. student@college.edu).');
+      setError('Please enter a valid registered college email address.');
       return;
     }
 
@@ -42,7 +42,7 @@ const ForgotPassword = () => {
       }
     } catch (err) {
       setSubmitting(false);
-      setError('Failed to send OTP. Please try again.');
+      setError('Failed to generate OTP. Please try again.');
     }
   };
 
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
             Forgot Your Password?
           </h2>
           <p className="text-center text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-            Enter your registered college email address and we'll send you a one-time verification code to reset your password.
+            Enter your registered college email address to generate a 6-digit verification code to reset your password.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ const ForgotPassword = () => {
               />
             </div>
             <span className="text-[10px] text-slate-400 mt-1.5 block">
-              We'll send a 6-digit verification code to this email
+              Enter your registered college email address
             </span>
           </div>
 
@@ -123,10 +123,13 @@ const ForgotPassword = () => {
             {submitting ? (
               <>
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                Sending OTP...
+                Generating OTP...
               </>
             ) : (
-              'Send OTP'
+              <>
+                <Sparkles className="h-4 w-4" />
+                Generate OTP
+              </>
             )}
           </button>
         </form>
@@ -137,9 +140,9 @@ const ForgotPassword = () => {
             <Shield className="h-4.5 w-4.5" />
           </div>
           <div className="text-left">
-            <h4 className="text-[11px] font-bold tracking-wide uppercase text-slate-700 dark:text-slate-250">Secure Verification</h4>
+            <h4 className="text-[11px] font-bold tracking-wide uppercase text-slate-700 dark:text-slate-250">Demo Mode Preview</h4>
             <p className="mt-1 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400">
-              The OTP is single-use, expires in 5 minutes, and will only be sent to your verified college email address.
+              The 6-digit OTP will be generated locally and displayed inside the testing preview panel on the next screen.
             </p>
           </div>
         </div>
