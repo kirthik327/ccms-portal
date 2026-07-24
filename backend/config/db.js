@@ -63,9 +63,8 @@ const connectDB = async () => {
     } catch (connError) {
       console.log(`Connection failed: ${connError.message}`);
       
-      if (process.env.NODE_ENV === 'production') {
-        console.error('Database connection failed in production. Exiting process...');
-        throw connError;
+      if (connError) {
+        console.log(`Primary MongoDB Connection failed: ${connError.message}`);
       }
 
       console.log('Spinning up MongoMemoryServer (In-Memory Database Fallback)...');
