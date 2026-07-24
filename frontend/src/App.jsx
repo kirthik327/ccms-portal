@@ -9,6 +9,9 @@ import dashboardBg from './assets/dashboard-bg.jpg';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import VerifyOTP from './pages/VerifyOTP';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import ComplaintSubmit from './pages/ComplaintSubmit';
 import ComplaintDetails from './pages/ComplaintDetails';
@@ -63,6 +66,9 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp" element={<VerifyOTP />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes Wrapper */}
           <Route element={<ProtectedRoute />}>
