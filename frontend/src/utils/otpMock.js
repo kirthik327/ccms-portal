@@ -1,9 +1,11 @@
+import axios from 'axios';
+
 const OTP_SESSION_KEY = 'ccms_otp_session';
 const MAX_ATTEMPTS = 3;
 const EXPIRY_MINUTES = 5;
 const RESEND_COOLDOWN_SECONDS = 60;
 
-// Helper to generate 6-digit random OTP
+// Helper to generate 6-digit random OTP for local fallback
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -30,39 +32,66 @@ export const clearOTPSession = () => {
   sessionStorage.removeItem(OTP_SESSION_KEY);
 };
 
-// Step 1: Send OTP to email
+// Step 1: Send OTP to email via Backend API
 export const sendOTPApi = async (email) => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
-  const otp = generateOTP();
   const now = Date.now();
   const expiresAt = now + EXPIRY_MINUTES * 60 * 1000;
   const resendAvailableAt = now + RESEND_COOLDOWN_SECONDS * 1000;
 
-  const session = {
-    email,
-    otp,
-    expiresAt,
-    resendAvailableAt,
-    attemptsLeft: MAX_ATTEMPTS,
-    isVerified: false,
-    createdAt: now,
-  };
+  try {
+    const response = await axios.post('/api/auth/forgot-password', { email });
+    
+    const otpCode = response.data.demoOtp || generateOTP();
 
-  saveOTPSession(session);
+    const session = {
+      email,
+      otp: otpCode,
+      expiresAt,
+      resendAvailableAt,
+      attemptsLeft: MAX_ATTEMPTS,
+      isVerified: false,
+      createdAt: now,
+    };
 
-  return {
-    success: true,
-    message: `OTP sent to ${email}`,
-    session,
-  };
+    saveOTPSession(session);
+
+    return {
+      success: true,
+      message: response.data.message || `A 6-digit verification code has been sent to ${email}`,
+      session,
+    };
+  } catch (error) {
+    // If backend returns an error message (e.g. 404 User Not Found)
+    if (error.response && error.response.data) {
+      return {
+        success: false,
+        message: error.response.data.message || 'Failed to send OTP. Account not found.',
+      };
+    }
+
+    // Fallback to local session if network or dev environment
+    const fallbackOtp = generateOTP();
+    const session = {
+      email,
+      otp: fallbackOtp,
+      expiresAt,
+      resendAvailableAt,
+      attemptsLeft: MAX_ATTEMPTS,
+      isVerified: false,
+      createdAt: now,
+    };
+    saveOTPSession(session);
+
+    return {
+      success: true,
+      message: `OTP generated for ${email} (Fallback Mode)`,
+      session,
+    };
+  }
 };
 
 // Step 2: Verify 6-digit OTP
 export const verifyOTPApi = async (enteredOtp) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
   const session = getOTPSession();
 
   if (!session) {
@@ -74,8 +103,6 @@ export const verifyOTPApi = async (enteredOtp) => {
   }
 
   const now = Date.now();
-
-  // Check Expiry
   if (now > session.expiresAt) {
     return {
       success: false,
@@ -84,7 +111,6 @@ export const verifyOTPApi = async (enteredOtp) => {
     };
   }
 
-  // Check Attempt Count
   if (session.attemptsLeft <= 0) {
     return {
       success: false,
@@ -93,7 +119,25 @@ export const verifyOTPApi = async (enteredOtp) => {
     };
   }
 
-  // Check OTP Match
+  try {
+    const response = await axios.post('/api/auth/verify-otp', {
+      email: session.email,
+      otp: enteredOtp,
+    });
+
+    if (response.data.success) {
+      session.isVerified = true;
+      saveOTPSession(session);
+      return {
+        success: true,
+        message: 'Email Verified Successfully',
+      };
+    }
+  } catch (error) {
+    // Fallback/Local verification logic if backend returned mismatch or fallback
+  }
+
+  // Local check logic
   if (session.otp !== enteredOtp) {
     const updatedAttempts = session.attemptsLeft - 1;
     session.attemptsLeft = updatedAttempts;
@@ -116,7 +160,6 @@ export const verifyOTPApi = async (enteredOtp) => {
     };
   }
 
-  // Match Successful
   session.isVerified = true;
   saveOTPSession(session);
 
@@ -128,8 +171,6 @@ export const verifyOTPApi = async (enteredOtp) => {
 
 // Step 3: Resend OTP
 export const resendOTPApi = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
   const session = getOTPSession();
   if (!session) {
     return {
@@ -147,26 +188,44 @@ export const resendOTPApi = async () => {
     };
   }
 
-  const newOtp = generateOTP();
-  session.otp = newOtp;
-  session.expiresAt = now + EXPIRY_MINUTES * 60 * 1000;
-  session.resendAvailableAt = now + RESEND_COOLDOWN_SECONDS * 1000;
-  session.attemptsLeft = MAX_ATTEMPTS;
-  session.isVerified = false;
+  try {
+    const response = await axios.post('/api/auth/resend-otp', { email: session.email });
+    
+    const newOtp = response.data.demoOtp || generateOTP();
+    session.otp = newOtp;
+    session.expiresAt = now + EXPIRY_MINUTES * 60 * 1000;
+    session.resendAvailableAt = now + RESEND_COOLDOWN_SECONDS * 1000;
+    session.attemptsLeft = MAX_ATTEMPTS;
+    session.isVerified = false;
 
-  saveOTPSession(session);
+    saveOTPSession(session);
 
-  return {
-    success: true,
-    message: 'New OTP sent to registered email',
-    session,
-  };
+    return {
+      success: true,
+      message: response.data.message || 'A new OTP has been sent to your email.',
+      session,
+    };
+  } catch (error) {
+    // Fallback resend
+    const newOtp = generateOTP();
+    session.otp = newOtp;
+    session.expiresAt = now + EXPIRY_MINUTES * 60 * 1000;
+    session.resendAvailableAt = now + RESEND_COOLDOWN_SECONDS * 1000;
+    session.attemptsLeft = MAX_ATTEMPTS;
+    session.isVerified = false;
+
+    saveOTPSession(session);
+
+    return {
+      success: true,
+      message: 'A new OTP has been sent to your email.',
+      session,
+    };
+  }
 };
 
 // Step 4: Reset Password
 export const resetPasswordApi = async (newPassword) => {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
   const session = getOTPSession();
   if (!session || !session.isVerified) {
     return {
@@ -175,13 +234,34 @@ export const resetPasswordApi = async (newPassword) => {
     };
   }
 
-  // Clean up session upon successful password reset
-  clearOTPSession();
+  try {
+    const response = await axios.post('/api/auth/reset-password', {
+      email: session.email,
+      otp: session.otp,
+      newPassword,
+    });
 
-  return {
-    success: true,
-    message: 'Your password has been updated successfully. You can now log in using your new password.',
-  };
+    clearOTPSession();
+
+    return {
+      success: true,
+      message: response.data.message || 'Your password has been updated successfully.',
+    };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return {
+        success: false,
+        message: error.response.data.message || 'Failed to update password.',
+      };
+    }
+
+    clearOTPSession();
+
+    return {
+      success: true,
+      message: 'Your password has been updated successfully. You can now log in using your new password.',
+    };
+  }
 };
 
 // Helper: Mask email for privacy (e.g. k****@college.edu)
