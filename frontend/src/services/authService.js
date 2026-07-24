@@ -1,5 +1,15 @@
 import axios from 'axios';
 
+// Configure explicit backend API instance to ensure requests hit Render backend
+const BACKEND_URL = 'https://ccms-backend-p5rm.onrender.com';
+
+const api = axios.create({
+  baseURL: BACKEND_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 const RESET_TOKEN_KEY = 'ccms_reset_token';
 const RESET_EMAIL_KEY = 'ccms_reset_email';
 
@@ -42,7 +52,7 @@ export const clearResetSession = () => {
 // 1. Send OTP to email
 export const sendOTPApi = async (email) => {
   try {
-    const response = await axios.post('/api/auth/forgot-password', { email });
+    const response = await api.post('/api/auth/forgot-password', { email });
     saveResetSession(email);
     return {
       success: true,
@@ -69,7 +79,7 @@ export const verifyOTPApi = async (otp) => {
   }
 
   try {
-    const response = await axios.post('/api/auth/verify-otp', { email, otp });
+    const response = await api.post('/api/auth/verify-otp', { email, otp });
     
     if (response.data.success && response.data.resetToken) {
       saveResetSession(email, response.data.resetToken);
@@ -105,7 +115,7 @@ export const resendOTPApi = async () => {
   }
 
   try {
-    const response = await axios.post('/api/auth/resend-otp', { email });
+    const response = await api.post('/api/auth/resend-otp', { email });
     return {
       success: true,
       message: response.data.message || 'A new verification code has been sent to your email.',
@@ -130,7 +140,7 @@ export const resetPasswordApi = async (newPassword) => {
   }
 
   try {
-    const response = await axios.post('/api/auth/reset-password', {
+    const response = await api.post('/api/auth/reset-password', {
       resetToken,
       newPassword,
     });
